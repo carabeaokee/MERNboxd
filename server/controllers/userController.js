@@ -5,10 +5,12 @@ export const testRoute = (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
+  //   console.log("getting AllUsers");
   try {
     const allUsers = await UserModel.find();
+    // console.log("found thee users:", allUsers);
     res.status(200).json(allUsers);
-  } catch (e) {
-    console.log(e);
+  } catch {
+    res.status(404).json({ message: error.message });
   }
 };

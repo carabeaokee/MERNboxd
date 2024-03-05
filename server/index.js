@@ -2,10 +2,10 @@ import * as dotenv from "dotenv";
 // loading .env file
 dotenv.config();
 
-import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
-import userRouter from "./routes/UserRoutes.js";
+import { userRouter } from "./routes/userRoutes.js";
+import mongoose from "mongoose";
 
 const app = express();
 app.use(express.json());
@@ -17,7 +17,6 @@ app.use(
 app.use(cors());
 
 const port = process.env.PORT || 9999;
-
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -30,6 +29,8 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+app.use("/api/users", userRouter);
+
 app.use("*", (req, res) =>
   res.status(404).json({ error: "Endpoint not found." })
 );
@@ -38,5 +39,3 @@ app.use("*", (req, res) =>
 // app.get("/", (req, res) => {
 //   res.send("Hello World!");
 // });
-
-app.use("/api/users", userRouter);
