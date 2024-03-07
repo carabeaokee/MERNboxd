@@ -22,7 +22,6 @@ app.use(
 );
 // Using CORS middleware
 app.use(cors());
-
 // Setting the port for the server to listen on, either from environment variables or a default value
 const port = process.env.PORT || process.env.CUSTOM_PORT;
 // Connecting to the MongoDB database using the URI from environment variables
@@ -40,7 +39,7 @@ mongoose
   // If there is an error connecting to the database, log the error
   .catch((err) => console.log(err));
 
-// Using the user/filmRouter for all routes starting with "/api/users" & "/api/films"
+// Using the _Router for all routes starting with "/api/_"
 app.use("/api/users", userRouter);
 app.use("/api/films", filmRouter);
 app.use("/api/reviews", reviewRouter);

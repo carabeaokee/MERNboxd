@@ -1,46 +1,42 @@
-// import { useEffect, useState } from "react";
-import { useEffect } from "react";
 import "./App.css";
+import { BrowserRouter as Router, Routes } from "react-router-dom";
+// import { useRoutes } from 'react-router-dom';
+import { Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import FilmList from "./pages/FilmList";
+import ReviewList from "./pages/ReviewList";
+import DetailsPage from "./pages/DetailsPage";
 import SignIn from "./sign up-out-in/Log-in";
 import Registration from "./sign up-out-in/Registration";
-
-// interface User {
-//   _id: number;
-//   email: string;
-//   password: string;
-// }
+import Profile from "./pages/UserProfile";
+import Error from "./pages/Error";
+// import PageRoutes from "./components/Routes";
 
 function App() {
-  //   const [user, setUser] = useState<User[] | null>(null);
-
-  //   useEffect(() => {
-  //     const fetchData = async () => {};
-  //     fetchData();
-  //   }, []);
-
-  const getData = async () => {
-    const response = await fetch("localhost:5004/api/users/allusers");
-    const result = await response.json();
-    console.log("result", result);
-  };
-  useEffect(() => {
-    // var requestOptions = {
-    //   method: "GET",
-    //   redirect: "follow",
-    // };
-
-    // fetch("localhost:5005/api/users/allusers")
-    //   .then((response) => response.json())
-    //   .then((result) => console.log("result", result))
-    //   .catch((error) => console.log("error", error));
-    getData();
-  }, []);
-
   return (
     <>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/allfilms" element={<FilmList />} />
+          <Route path="/allreviews" element={<ReviewList />} />
+          <Route path="/:id" element={<DetailsPage />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/register" element={<Registration />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/error" element={<Error />} />
+          <Route path="*" element={<Error />} />
+        </Routes>
+      </Router>
+      <h1>Test</h1>
+      {/* <SignIn /> */}
+      {/* <Registration /> */}
+      {/* <DetailsPage /> */}
+      {/* <a href={`/films/${film._id}`}> */}
       {/* <h1>Test</h1> */}
-      <SignIn />
-      <Registration />
+      {/* <SignIn /> */}
+      {/* <Registration /> */}
+      {/* <DetailsPage /> */}
     </>
   );
 }

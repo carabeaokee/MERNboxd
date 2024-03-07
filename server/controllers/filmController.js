@@ -5,16 +5,44 @@ import { FilmModel } from "../models/filmModel.js";
 // };
 
 export const getAllFilms = async (req, res) => {
-  //   console.log("getting AllFilms");
   try {
-    // Using the FilmModel to find all films in the database
-    const allFilms = await FilmModel.find();
-    // console.log("found thee users:", allUsers);
+    const films = await FilmModel.find();
+    res.status(200).json({
+      message: "All Films",
+      films: films,
+    });
+    // res.send("All Films");
+  } catch (error) {
+    console.error("Error fetching films:", error);
+    res
+      .status(500)
+      .json({ message: "Error fetching films", error: error.message });
+  }
+};
 
-    // If successful, the function responds with a status of 200 and a JSON object of all films
-    res.status(200).json(allFilms);
-  } catch {
-    // If there is an error, the function responds with a status of 404 and a JSON object with the error message
-    res.status(404).json({ message: error.message });
+export const getFilmById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("FILM id:>> ", id);
+    const film = await FilmModel.findById({ _id: id }).populate({
+      path: "reviews",
+      populate: {
+        path: "author",
+        select: "username",
+      },
+      // select: "body",
+    });
+    console.log("film:>> ", film);
+
+    if (!film) {
+      return res.status(404).json({ message: "Film not found" });
+    }
+
+    res.status(200).json(film);
+  } catch (error) {
+    console.error("Error fetching film:", error);
+    res
+      .status(500)
+      .json({ message: "Error fetching film", error: error.message });
   }
 };
