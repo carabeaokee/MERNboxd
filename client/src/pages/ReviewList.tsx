@@ -3,9 +3,15 @@ import { useEffect, useState } from "react";
 
 type Review = {
   _id: string;
-  author: string;
+  author: {
+    _id: string;
+    username: string;
+  };
   body: string;
-  film: string;
+  film: {
+    _id: string;
+    title: string;
+  };
 };
 
 function ReviewList() {
@@ -27,10 +33,21 @@ function ReviewList() {
     <>
       <div>
         {reviews.map((review) => (
-          <div key={review._id}>
-            <h2>{review.author}</h2>
-            <p>{review.body}</p>
-            <p>{review.film}</p>
+          <div
+            key={review._id}
+            style={{
+              border: "1px solid black",
+              padding: "10px",
+              margin: "10px",
+            }}
+          >
+            <p>
+              <strong>{review.author.username}</strong>
+            </p>
+            <p>
+              <em>{review.body}</em>
+            </p>
+            <h2>{review.film.title}</h2>
           </div>
         ))}
       </div>

@@ -1,5 +1,9 @@
 import express from "express";
-import { getAllUsers, testRoute } from "../controllers/userController.js";
+import {
+  getAllUsers,
+  testRoute,
+  createUser,
+} from "../controllers/userController.js";
 
 const userRouter = express.Router();
 // app.METHOD(PATH, HANDLER)
@@ -9,5 +13,8 @@ const userRouter = express.Router();
 
 userRouter.get("/test", testRoute);
 userRouter.get("/allusers", getAllUsers);
+userRouter.post("/register", (req, res) => {
+  res.send("testing route....");
+});
 
 export default userRouter;

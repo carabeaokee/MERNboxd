@@ -10,12 +10,14 @@ import SignIn from "./sign up-out-in/Log-in";
 import Registration from "./sign up-out-in/Registration";
 import Profile from "./pages/UserProfile";
 import Error from "./pages/Error";
+import Navbar from "./components/Navbar";
 // import PageRoutes from "./components/Routes";
 
 function App() {
   return (
     <>
       <Router>
+        <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/allfilms" element={<FilmList />} />

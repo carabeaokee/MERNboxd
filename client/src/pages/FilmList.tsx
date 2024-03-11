@@ -31,7 +31,7 @@ function FilmList() {
             <h2>{film.title}</h2>
             <p>{film.year}</p>
             <p>{film.director}</p>
-            <a href={`/films/${film._id}`}>
+            <a href={`/${film._id}`}>
               <img
                 src={film.poster}
                 alt={film.title}
