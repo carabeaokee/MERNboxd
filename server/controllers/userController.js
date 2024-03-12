@@ -5,31 +5,40 @@ export const testRoute = (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  console.log("req.body :>> ", req.body);
-  const user = {
-    email: req.body.email,
-    password: req.body.password,
-    username: req.body.username,
-  };
-  const newUser = new UserModel(user);
+  console.log("creating user");
+  const user = req.body;
+
+  if (!user.email || !user.password || !user.username) {
+    return res.status(400).json({ error: "Please fill out all fields" });
+  }
+
+  const userExists = await UserModel.findOne({
+    $or: [{ email: user.email }, { username: user.username }],
+  });
+
+  if (userExists) {
+    return res
+      .status(400)
+      .json({ error: "An account with this email or username already exists" });
+  }
+
   try {
-    const result = await newUser.save();
+    const newUser = new UserModel(user);
+    const user = await newUser.save();
     res.status(200).json(result);
   } catch (e) {
     console.log(e);
-  }
-  if (!req.body.email || !req.body.password || !req.body.username) {
-    return res.status(400).json({ error: "Please fill out all fields" });
+    res.status(500).json({ error: e.message });
   }
 };
 
 export const getAllUsers = async (req, res) => {
-  //   console.log("getting AllUsers");
+  console.log("getting AllUsers");
   try {
     const allUsers = await UserModel.find();
-    // console.log("found thee users:", allUsers);
+    console.log("found all users:", allUsers);
     res.status(200).json(allUsers);
-  } catch {
+  } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };

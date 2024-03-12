@@ -13,8 +13,6 @@ const userRouter = express.Router();
 
 userRouter.get("/test", testRoute);
 userRouter.get("/allusers", getAllUsers);
-userRouter.post("/register", (req, res) => {
-  res.send("testing route....");
-});
+userRouter.post("/register", createUser);
 
 export default userRouter;
