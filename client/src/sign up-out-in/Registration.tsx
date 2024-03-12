@@ -29,6 +29,8 @@ const Registration = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            paddingTop: "20px",
+            paddingBottom: "20px",
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
@@ -43,7 +45,7 @@ const Registration = () => {
                   required
                   fullWidth
                   id="usename"
-                  label="USername"
+                  label="Username"
                   autoFocus
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -84,7 +86,7 @@ const Registration = () => {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link to="/login">Already have an account? Login</Link>
+                <Link to="/signin">Already have an account? Login</Link>
               </Grid>
             </Grid>
           </Box>

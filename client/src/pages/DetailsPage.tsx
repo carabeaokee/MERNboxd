@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 type Review = {
   _id: string;
@@ -52,6 +53,7 @@ function DetailsPage() {
 
   return (
     <>
+      <Navbar />
       <div>
         <h1>{entry.title}</h1>
         <p>Year: {entry.year}</p>
@@ -70,9 +72,7 @@ function DetailsPage() {
           <p>
             <strong>Author:</strong> {review.author.username}
           </p>
-          <p>
-            <strong>Review:</strong> {review.body}
-          </p>
+          <p>{review.body}</p>
         </div>
       ))}
     </>

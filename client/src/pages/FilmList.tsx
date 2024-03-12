@@ -12,6 +12,7 @@ type Film = {
 
 function FilmList() {
   const [films, setFilms] = useState<Film[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const getData = async () => {
     const response = await fetch("http://localhost:5004/api/films/allfilms");
@@ -23,14 +24,20 @@ function FilmList() {
     getData();
   }, []);
 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredFilms = films.filter((film) =>
+    film.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       <div>
-        {films.map((film) => (
+        <input type="text" value={searchTerm} onChange={handleSearchChange} />
+        {filteredFilms.map((film) => (
           <div key={film._id}>
-            <h2>{film.title}</h2>
-            <p>{film.year}</p>
-            <p>{film.director}</p>
             <a href={`/${film._id}`}>
               <img
                 src={film.poster}
@@ -38,8 +45,11 @@ function FilmList() {
                 style={{ width: "200px", height: "auto" }}
               />
             </a>
-
-            <p>{film.synopsis}</p>
+            <h2>
+              {film.title}{" "}
+              <span style={{ fontSize: "0.8em" }}>({film.year})</span>
+            </h2>
+            <h3>Director: {film.director}</h3>
           </div>
         ))}
       </div>
