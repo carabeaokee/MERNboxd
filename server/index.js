@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import userRouter from "./routes/userRoutes.js";
 import filmRouter from "./routes/filmRoutes.js";
 import reviewRouter from "./routes/reviewRoutes.js";
+import { cloudinaryConfig } from "./config/cloudinary.js";
 
 // Initializing an Express application
 const app = express();
@@ -22,6 +23,9 @@ app.use(
 );
 // Using CORS middleware
 app.use(cors());
+
+cloudinaryConfig();
+
 // Setting the port for the server to listen on, either from environment variables or a default value
 const port = process.env.PORT || process.env.CUSTOM_PORT;
 // Connecting to the MongoDB database using the URI from environment variables

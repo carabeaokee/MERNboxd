@@ -1,30 +1,18 @@
 import { FilmModel } from "../models/filmModel.js";
 import { imageUpload } from "../utilities/uploadImage.js";
 
-// export const testRoute = (req, res) => {
-//   res.send("User Route Test");
-// };
-
 export const createFilm = async (req, res) => {
   console.log("creating film");
-  const film = req.body;
+  const { title, year, director, synopsis } = req.body;
 
-  if (
-    !film.title ||
-    !film.director ||
-    !film.year ||
-    !film.synopsis ||
-    !film.poster
-  ) {
+  if (!title || !director || !year || !synopsis || !req.file) {
     return res.status(400).json({ error: "Please fill out all fields" });
   }
 
   const filmExists = await FilmModel.findOne({
-    $and: [
-      { title: film.title },
-      { year: film.year },
-      { director: film.director },
-    ],
+    title: title,
+    year: year,
+    director: director,
   });
 
   if (filmExists) {
@@ -33,12 +21,17 @@ export const createFilm = async (req, res) => {
 
   try {
     const uploadedImage = await imageUpload(req.file, "poster");
-    const { secure_url, public_id } = uploadedImage;
+
+    if (!uploadedImage || !uploadedImage.secure_url) {
+      return res.status(500).json({ error: "Failed to upload image" });
+    }
+
+    const { secure_url } = uploadedImage;
     const newFilm = new FilmModel({
-      title: film.title,
-      year: film.year,
-      director: film.director,
-      synopsis: film.synopsis,
+      title: title,
+      year: year,
+      director: director,
+      synopsis: synopsis,
       poster: secure_url,
     });
 
@@ -46,7 +39,9 @@ export const createFilm = async (req, res) => {
     res.status(200).json(film);
   } catch (e) {
     console.log(e);
-    res.status(500).json({ error: e.message });
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the film" });
   }
 };
 

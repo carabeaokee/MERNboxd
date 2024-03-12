@@ -6,7 +6,7 @@ const filmSchema = new mongoose.Schema({
   year: { type: String, required: true },
   director: { type: String, required: true },
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "review" }],
-  poster: { type: String, required: true },
+  poster: { type: String, default: "" },
   synopsis: { type: String, required: true },
 });
 export const FilmModel = mongoose.model("film", filmSchema);

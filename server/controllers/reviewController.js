@@ -1,10 +1,8 @@
 import { ReviewModel } from "../models/reviewModel.js";
-// import { FilmModel } from "../models/filmModel.js";
+import { FilmModel } from "../models/filmModel.js";
 
 export const getAllReviews = async (req, res) => {
-  //   console.log("getting AllFilms");
   try {
-    // Using the ReviewModel to find all films in the database
     const reviews = await ReviewModel.find()
       .populate({
         path: "author",
@@ -14,27 +12,38 @@ export const getAllReviews = async (req, res) => {
         path: "film",
         select: "title",
       });
-    // console.log("found these reviews:", allReviews);
 
     res.send({ reviews });
-  } catch {
-    // If there is an error, the function responds with a status of 404 and a JSON object with the error message
+  } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
 
 export const addReview = async (req, res) => {
-  //   console.log("creating film");
-  const review = req.body;
-  //   console.log("req.body:>> ", req.body);
+  const { id } = req.params; // film id
+  const reviewData = req.body; // review data
 
   try {
-    const newReview = new ReviewModel(review);
+    const film = await FilmModel.findById(id);
+
+    if (!film) {
+      return res.status(404).json({ message: "Film not found" });
+    }
+
+    const newReview = new ReviewModel(reviewData);
     const review = await newReview.save();
-    // console.log("newReview:>> ", newReview);
-    res.status(200).json(review);
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({ error: e.message });
+
+    // Add the new review to the film's reviews
+    film.reviews.push(review._id);
+
+    // Save the updated film
+    await film.save();
+
+    res.status(200).json(film);
+  } catch (error) {
+    console.error("Error adding review:", error);
+    res
+      .status(500)
+      .json({ message: "Error adding review", error: error.message });
   }
 };
