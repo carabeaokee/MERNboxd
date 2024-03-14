@@ -11,6 +11,7 @@ import {
 import { LockOutlined } from "@mui/icons-material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import "../css/rego.css";
 
 const Registration = () => {
   const [username, setUsername] = useState("");

@@ -12,6 +12,10 @@ import { styled, alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Outlinedcircles from "../assets/icons/outlinedcircles.svg";
 import Accountavatar from "../assets/icons/accountavatar.svg";
+import axios from "axios";
+import { useEffect, useState } from "react";
+// import { Autocomplete } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -55,6 +59,29 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbar() {
+  const [searchText, setSearchText] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchText.length > 0) {
+      axios.get(`/api/films/filter?title=${searchText}`).then((response) => {
+        setSearchResults(response.data.slice(0, 5));
+      });
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchText]);
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    if (searchResults.length === 1) {
+      navigate(`/films/${searchResults[0].id}`);
+    } else {
+      navigate(`/filter?title=${searchText}`);
+    }
+  };
+
   return (
     <AppBar
       position="fixed"
@@ -98,15 +125,19 @@ export default function Navbar() {
         >
           Reviews
         </Button>
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-          />
-        </Search>
+        <form onSubmit={handleSearchSubmit}>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+              value={searchText}
+              onChange={(event) => setSearchText(event.target.value)}
+            />
+          </Search>
+        </form>
         <IconButton color="inherit" component={RouterLink} to="/profile">
           <Avatar
             alt="Profile"

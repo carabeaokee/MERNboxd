@@ -3,16 +3,21 @@ import {
   getAllUsers,
   testRoute,
   createUser,
+  updateUserAvatar,
 } from "../controllers/userController.js";
+import { multerUpload } from "../middleware/multer.js";
 
+// define a new router
 const userRouter = express.Router();
-// app.METHOD(PATH, HANDLER)
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
 
+// define the routes
 userRouter.get("/test", testRoute);
 userRouter.get("/allusers", getAllUsers);
 userRouter.post("/register", createUser);
+userRouter.post(
+  "/profile/:id",
+  multerUpload.single("avatar"),
+  updateUserAvatar
+);
 
 export default userRouter;

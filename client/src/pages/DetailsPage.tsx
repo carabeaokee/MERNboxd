@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import "../css/details.css";
 
 type Review = {
   _id: string;
@@ -54,7 +55,7 @@ function DetailsPage() {
   return (
     <>
       <Navbar />
-      <div>
+      <div style={{ color: "whitesmoke" }}>
         <h1>{entry.title}</h1>
         <p>Year: {entry.year}</p>
         <p>Director: {entry.director}</p>
@@ -64,17 +65,24 @@ function DetailsPage() {
 
       <h2>Reviews</h2>
 
-      {entry.reviews.map((review) => (
-        <div
-          key={review._id}
-          style={{ border: "1px solid black", padding: "10px", margin: "10px" }}
-        >
-          <p>
-            <strong>Author:</strong> {review.author.username}
-          </p>
-          <p>{review.body}</p>
-        </div>
-      ))}
+      {entry &&
+        entry.reviews &&
+        entry.reviews.map((review) => (
+          <div
+            key={review._id}
+            style={{
+              border: "1px solid black",
+              padding: "10px",
+              margin: "10px",
+              color: "whitesmoke",
+            }}
+          >
+            <p>
+              <strong>Author:</strong> {review.author.username}
+            </p>
+            <p>{review.body}</p>
+          </div>
+        ))}
     </>
   );
 }
