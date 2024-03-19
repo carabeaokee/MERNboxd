@@ -8,11 +8,14 @@ type SearchReview = {
   author: {
     _id: string;
     username: string;
+    avatar: string;
   };
   body: string;
   film: {
     _id: string;
+    year: string;
     title: string;
+    poster: string;
   };
 };
 
@@ -26,22 +29,31 @@ type SearchFilm = {
   synopsis: string;
 };
 
+// Main component for displaying search results
 export default function SearchResults() {
+  // Get the search query from the URL
   const location = useLocation();
+  // parse the query string
   const searchParams = new URLSearchParams(location.search);
+  // get the value of the "title", "director", and "year" parameters
   const title = searchParams.get("title");
+  const director = searchParams.get("director");
+  const year = searchParams.get("year");
 
+  // State for storing the search results
   const [films, setFilms] = useState<SearchFilm[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // useEffect hook for fetching the films when the title changes
   useEffect(() => {
-    const url = `/api/films/filter?title=${title}`;
+    const url = `/api/films/filter?title=${title}&director=${director}&year=${year}`;
     console.log("API URL:", url);
     setIsLoading(true);
     setError(null);
+
     axios
-      .get(`/api/films/filter?title=${title}`)
+      .get(url)
       .then((response) => {
         console.log("API response:", response.data);
         setFilms(response.data);
@@ -53,7 +65,7 @@ export default function SearchResults() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [title]);
+  }, [title, director, year]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -63,6 +75,7 @@ export default function SearchResults() {
     return <div>{error}</div>;
   }
 
+  // If no films are found, display a message
   if (films.length === 0) {
     return <div>No films found</div>;
   }

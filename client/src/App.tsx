@@ -12,6 +12,7 @@ import Profile from "./pages/UserProfile";
 import Error from "./pages/Error";
 import Navbar from "./components/Navbar";
 import SearchResults from "./components/SearchResults";
+import UsersList from "./pages/usersList";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           <Route path="/filter" element={<SearchResults />} />
           <Route path="/" element={<LandingPage />} />
+          <Route path="/allusers" element={<UsersList />} />
           <Route path="/allfilms" element={<FilmList />} />
           <Route path="/allreviews" element={<ReviewList />} />
           <Route path="/:id" element={<DetailsPage />} />

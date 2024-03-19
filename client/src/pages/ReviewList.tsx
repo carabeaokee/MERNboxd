@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 // import { Link } from "react-router-dom";
-import "../css/reviewlist.css";
-import ReviewCards from "../components/ReviewCards";
+// import "../css/reviewlist.css";
+import { Grid } from "@mui/material";
+// import ReviewCards from "../components/ReviewCards";
 // import ReviewCarousel from "../components/ReviewCarousel";
 
 type Film = {
   _id: string;
   title: string;
-  synopsis: string;
+  poster: string;
 };
 
 type Review = {
@@ -42,36 +43,42 @@ function ReviewList() {
 
   return (
     <>
-      <div>
-        {reviews &&
-          reviews.map((review) => (
-            <ReviewCards key={review._id} review={review} />
-          ))}
+      <div style={{ padding: "3rem" }}>
+        <Grid container spacing={3}>
+          {reviews &&
+            reviews.map((review) => (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                lg={3}
+                key={review._id}
+                style={{ color: "whitesmoke" }}
+              >
+                <img
+                  src={review.author.avatar}
+                  alt={review.author.username}
+                  style={{
+                    width: "200px",
+                    height: "auto",
+                    borderRadius: "50%",
+                  }}
+                />
+                <h2>{review.author.username} </h2>
+                <img
+                  src={review.film.poster}
+                  alt={review.film.title}
+                  style={{ width: "100px", height: "auto" }}
+                />
+                <h2>{review.film.title}</h2>
+                <p>{review.body}</p>
+              </Grid>
+            ))}
+        </Grid>
       </div>
 
       {/* {reviews && <ReviewCarousel reviews={reviews} />} */}
-
-      {/* <div>
-        {reviews.map((review) => (
-          <div
-            key={review._id}
-            style={{
-              border: "1px solid black",
-              padding: "10px",
-              margin: "10px",
-              color: "whitesmoke",
-            }}
-          >
-            <p>
-              <strong>{review.author.username}</strong>
-            </p>
-            <p>
-              <em>{review.body}</em>
-            </p>
-            <h2>{review.film.title}</h2>
-          </div>
-        ))}
-      </div> */}
     </>
   );
 }

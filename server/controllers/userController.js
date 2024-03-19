@@ -1,5 +1,8 @@
 import { UserModel } from "../models/userModel.js";
+import { hashPassword, verifyPassword } from "../utilities/bcrypt.js";
+
 import { imageUpload } from "../utilities/uploadImage.js";
+import { generateToken } from "../middleware/jwt.js";
 
 export const testRoute = (_, res) => {
   res.send("User Route Test");
@@ -28,8 +31,16 @@ export const createUser = async (req, res) => {
       .json({ error: "An account with this email or username already exists" });
   }
   try {
+    console.log("hashing password");
+    // Hash the password
+    const hashedPassword = await hashPassword(user.password);
+
     // Create a new user
-    const newUser = new UserModel(user);
+    const newUser = new UserModel({
+      username: user.username,
+      email: user.email,
+      password: hashedPassword,
+    });
     // Save the new user
     const savedUser = await newUser.save();
     // Send the saved user as a response
@@ -37,6 +48,57 @@ export const createUser = async (req, res) => {
   } catch (e) {
     console.log(e);
     res.status(500).json({ error: e.message });
+  }
+};
+
+// function to login a user
+export const loginUser = async (req, res) => {
+  console.log("logging in user");
+  // Retrieve the username and password from the request body
+  const { email, password } = req.body;
+
+  const user = await UserModel.findOne({ email: email });
+
+  console.log("user :>> ", user);
+
+  if (user) {
+    // Check if the password is correct
+    const { password: hashedPassword } = user;
+    console.log("hashedPassword :>> ", hashedPassword);
+    // Verify the password
+    const verified = verifyPassword(password, hashedPassword);
+
+    // If the password is correct, generate a token
+    if (verified) {
+      const token = generateToken(user);
+      // Send the token as a response
+      if (token) {
+        console.log("used verified");
+        res.status(201).json({ message: "User logged in", token: token });
+      } else {
+        console.log("Failed to generate token");
+      }
+    } else {
+      console.log("Verification failed");
+    }
+  } else {
+    res.status(500).json({ message: "Incorrect password" });
+  }
+};
+
+export const UpdateAllUserPW = async (req, res) => {
+  console.log("updating all users to have hashed passwords");
+  try {
+    const allUsers = await UserModel.find();
+    allUsers.forEach(async (user) => {
+      const { password } = user;
+      const hashedPassword = await hashPassword(password);
+      user.password = hashedPassword;
+      await user.save();
+    });
+    res.status(200).json({ message: "All users updated" });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
 };
 

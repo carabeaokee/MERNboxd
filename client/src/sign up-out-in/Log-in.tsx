@@ -17,7 +17,9 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {};
+  const handleLogin = () => {
+    console.log("logging in");
+  };
 
   return (
     <>

@@ -12,7 +12,7 @@ export const getAllReviews = async (req, res) => {
       })
       .populate({
         path: "film",
-        select: "title",
+        select: "title poster",
       });
 
     // Send the reviews as a response
@@ -52,7 +52,7 @@ export const addReview = async (req, res) => {
     },
     {
       path: "film",
-      select: "title",
+      select: "title poster",
     },
   ]);
 

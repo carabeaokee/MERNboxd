@@ -134,28 +134,14 @@ export const getFilmsByQuery = async (req, res) => {
       query.title = { $regex: new RegExp(title, "i") };
     }
 
-    // if (genre) {
-    //   query.genre = genre;
-    // }
-
-    // if (language) {
-    //   query.language = language;
-    // }
-
-    // if (country) {
-    //   query.country = country;
-    // }
-
-    // if (rating) {
-    //   query.rating = rating;
-    // }
-
-    // if (runtime) {
-    //   query.runtime = runtime;
-    // }
-
     // Retrieve the films that match the query
-    const films = await FilmModel.find(query);
+    const films = await FilmModel.find(query).populate({
+      path: "reviews",
+      populate: {
+        path: "author",
+        select: "username",
+      },
+    });
 
     console.log("films:>> ", films);
 
@@ -167,8 +153,6 @@ export const getFilmsByQuery = async (req, res) => {
     }
   } catch (error) {
     console.error("Error fetching films:", error);
-    res
-      .status(500)
-      .json({ message: "Error fetching films", error: error.message });
+    res.status(500).json({ error: "Error fetching films" });
   }
 };
