@@ -8,6 +8,7 @@ import FilmList from "../pages/FilmList";
 import LandingPage from "../pages/LandingPage";
 import React from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+// import SearchResults from "./SearchResults";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
     path: "/:id",
     element: <DetailsPage />,
   },
+
   {
     path: "/signin",
     element: <SignIn />,
@@ -38,7 +40,10 @@ const router = createBrowserRouter([
     path: "/profile",
     element: <Profile />,
   },
-
+  // {
+  //   path: "/filter",
+  //   element: <SearchResults />,
+  // },
   {
     path: "*",
     element: <Error />,

@@ -1,6 +1,5 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 
 type SearchReview = {
@@ -31,41 +30,52 @@ type SearchFilm = {
 
 // Main component for displaying search results
 export default function SearchResults() {
-  // Get the search query from the URL
+  // Get the current URL location
   const location = useLocation();
-  // parse the query string
+  console.log("location", location);
+
+  // Parse the query parameters
   const searchParams = new URLSearchParams(location.search);
-  // get the value of the "title", "director", and "year" parameters
-  const title = searchParams.get("title");
-  const director = searchParams.get("director");
-  const year = searchParams.get("year");
+  // get the value of the "text" parameter
+  const text = searchParams.get("text");
+
+  console.log("text", text);
 
   // State for storing the search results
   const [films, setFilms] = useState<SearchFilm[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // useEffect hook for fetching the films when the title changes
+  // useEffect hook to fetch search results
   useEffect(() => {
-    const url = `/api/films/filter?title=${title}&director=${director}&year=${year}`;
+    const url = `/api/films/filter?text=${text}`;
     console.log("API URL:", url);
+    // Set loading to true and clear any previous errors
     setIsLoading(true);
     setError(null);
 
-    axios
-      .get(url)
-      .then((response) => {
-        console.log("API response:", response.data);
-        setFilms(response.data);
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("API response:", data);
+        // If the data is an array, set the films state
+        if (Array.isArray(data)) {
+          setFilms(data);
+          console.log("Films set:", data);
+        } else {
+          setError(data.message);
+          console.log("Error set:", data.message);
+        }
       })
       .catch((error) => {
         console.error("Error fetching films:", error);
         setError("Error fetching films");
       })
+      // Set loading to false when the fetch is complete
       .finally(() => {
         setIsLoading(false);
       });
-  }, [title, director, year]);
+  }, [text]);
 
   if (isLoading) {
     return <div>Loading...</div>;

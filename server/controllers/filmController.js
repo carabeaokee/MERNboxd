@@ -106,35 +106,18 @@ export const getFilmById = async (req, res) => {
 // Function to retrieve films by query
 export const getFilmsByQuery = async (req, res) => {
   try {
-    // Retrieve the year and director from the request query
-    const { year, director, title } = req.query;
+    const { text } = req.query;
 
-    // Create an empty query object
-    let query = {};
+    console.log("text", text);
 
-    // If the year is provided, add it to the query
-    if (year) {
-      // Check if year is a range
-      if (year.includes("-")) {
-        // Split the year range into start and end years
-        const [startYear, endYear] = year.split("-");
-        query.year = { $gte: startYear, $lte: endYear };
-      } else {
-        query.year = year;
-      }
-    }
+    let query = {
+      $or: [
+        { title: { $regex: new RegExp(text, "i") } },
+        { director: { $regex: new RegExp(text, "i") } },
+        { year: text },
+      ],
+    };
 
-    // If the director is provided, add it to the query
-    if (director) {
-      query.director = { $regex: new RegExp(director, "i") };
-    }
-
-    // If the title is provided, add it to the query
-    if (title) {
-      query.title = { $regex: new RegExp(title, "i") };
-    }
-
-    // Retrieve the films that match the query
     const films = await FilmModel.find(query).populate({
       path: "reviews",
       populate: {
@@ -145,7 +128,6 @@ export const getFilmsByQuery = async (req, res) => {
 
     console.log("films:>> ", films);
 
-    // If no films are found, return a message
     if (films.length > 0) {
       res.status(200).json(films);
     } else {

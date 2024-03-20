@@ -12,9 +12,7 @@ import { styled, alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Outlinedcircles from "../assets/icons/outlinedcircles.svg";
 import Accountavatar from "../assets/icons/accountavatar.svg";
-import axios from "axios";
 import { useEffect, useState } from "react";
-// import { Autocomplete } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
@@ -58,97 +56,146 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Navbar() {
+// Navbar component that appears at the top of the page
+export default function Navbar({ children }) {
+  // State for storing the search text
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  // Hook for navigating to a different page
   const navigate = useNavigate();
 
+  // useEffect hook to fetch search results
   useEffect(() => {
+    // Variable to ignore the fetch response if the component is unmounted
+    let ignore = false;
+
+    // If the search text is not empty, fetch the search results
     if (searchText.length > 0) {
-      axios.get(`/api/films/filter?title=${searchText}`).then((response) => {
-        setSearchResults(response.data.slice(0, 5));
-      });
+      fetch(`/api/films/filter?text=${searchText}`)
+        .then((response) => {
+          // Check if the response is ok
+          if (!response.ok) {
+            // If the response is not ok, throw an error
+            throw new Error("Network response was not ok");
+          }
+          // Parse the JSON response
+          return response.json();
+        })
+        // Set the search results
+        .then((data) => {
+          // If the component is unmounted, do not set the search results
+          if (!ignore) setSearchResults(data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     } else {
+      // If the search text is empty, clear the search results
       setSearchResults([]);
     }
+
+    // Return a cleanup function
+    return () => {
+      // When the component is unmounted, set the ignore variable to true
+      ignore = true;
+    };
   }, [searchText]);
 
+  // Function to handle the form submission
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    if (searchResults.length === 1) {
-      navigate(`/films/${searchResults[0].id}`);
-    } else {
-      navigate(`/filter?title=${searchText}`);
-    }
+    // Navigate to the filter page with the search text as a query parameter
+    // navigate(`/filter?text=${searchText}`);
   };
 
+  // const cloneChildren = React.Children.forEach(children, (child) => {
+  //   console.log("child", child);
+  //   // return React.cloneElement(child, { searchText });
+  //   clonedChildren = child.props.children.map((child) => {
+  //     return React.cloneElement(child, { searchText });
+  //   });
+  // });
+
+  // console.log("clonedChildren", clonedChildren);
+
   return (
-    <AppBar
-      position="fixed"
-      style={{ backgroundColor: "transparent", width: "100%" }}
-    >
-      <Toolbar>
-        <Box display="flex" flexGrow={1}>
-          <img
-            src={Outlinedcircles}
-            alt="circles"
-            style={{
-              width: "1.5rem",
-              height: "1.5rem",
-              paddingRight: "0.5rem",
-              marginTop: "0.4rem",
-              filter: "invert(100%)",
-            }}
-          />
-          <Typography variant="h6" component="div">
-            <RouterLink
-              to="/"
-              style={{ textDecoration: "none", color: "inherit", fontSize: 24 }}
-            >
-              Filmboxd
-            </RouterLink>
-          </Typography>
-        </Box>
-        <Button
-          color="inherit"
-          component={RouterLink}
-          to="/allfilms"
-          style={{ fontSize: "16px", paddingRight: "1rem" }}
-        >
-          Films
-        </Button>
-        <Button
-          color="inherit"
-          component={RouterLink}
-          to="/allreviews"
-          style={{ fontSize: "16px", paddingRight: "1rem" }}
-        >
-          Reviews
-        </Button>
-        <form onSubmit={handleSearchSubmit}>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-              value={searchText}
-              onChange={(event) => setSearchText(event.target.value)}
+    <>
+      <AppBar
+        position="fixed"
+        style={{ backgroundColor: "transparent", width: "100%" }}
+      >
+        <Toolbar>
+          <Box display="flex" flexGrow={1}>
+            <img
+              src={Outlinedcircles}
+              alt="circles"
+              style={{
+                width: "1.5rem",
+                height: "1.5rem",
+                paddingRight: "0.5rem",
+                marginTop: "0.4rem",
+                filter: "invert(100%)",
+              }}
             />
-          </Search>
-        </form>
-        <IconButton color="inherit" component={RouterLink} to="/profile">
-          <Avatar
-            alt="Profile"
-            src={Accountavatar}
-            style={{
-              filter: "invert(100%)",
-              padding: "0.3rem",
-            }}
-          />
-        </IconButton>
-      </Toolbar>
-    </AppBar>
+            <Typography variant="h6" component="div">
+              <RouterLink
+                to="/"
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                  fontSize: 24,
+                }}
+              >
+                Filmboxd
+              </RouterLink>
+            </Typography>
+          </Box>
+          <Button
+            color="inherit"
+            component={RouterLink}
+            to="/allfilms"
+            style={{ fontSize: "16px", paddingRight: "1rem" }}
+          >
+            Films
+          </Button>
+          <Button
+            color="inherit"
+            component={RouterLink}
+            to="/allreviews"
+            style={{ fontSize: "16px", paddingRight: "1rem" }}
+          >
+            Reviews
+          </Button>
+          <form onSubmit={handleSearchSubmit}>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+                value={searchText}
+                onChange={(event) => setSearchText(event.target.value)}
+              />
+              <Button type="submit" style={{ color: "white" }}>
+                Search
+              </Button>
+            </Search>
+          </form>
+          <IconButton color="inherit" component={RouterLink} to="/profile">
+            <Avatar
+              alt="Profile"
+              src={Accountavatar}
+              style={{
+                filter: "invert(100%)",
+                padding: "0.3rem",
+              }}
+            />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      {/* {clonedChildren} */}
+      {children}
+    </>
   );
 }

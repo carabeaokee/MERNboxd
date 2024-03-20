@@ -18,20 +18,21 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/filter" element={<SearchResults />} />
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/allusers" element={<UsersList />} />
-          <Route path="/allfilms" element={<FilmList />} />
-          <Route path="/allreviews" element={<ReviewList />} />
-          <Route path="/:id" element={<DetailsPage />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/register" element={<Registration />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/error" element={<Error />} />
-          <Route path="*" element={<Error />} />
-        </Routes>
+        <Navbar>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/filter" element={<SearchResults />} />
+            <Route path="/allusers" element={<UsersList />} />
+            <Route path="/allfilms" element={<FilmList searchText={null} />} />
+            <Route path="/allreviews" element={<ReviewList />} />
+            <Route path="/id/:id" element={<DetailsPage />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/register" element={<Registration />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/error" element={<Error />} />
+            <Route path="*" element={<Error />} />
+          </Routes>
+        </Navbar>
       </Router>
     </>
   );
