@@ -8,7 +8,7 @@ import FilmList from "../pages/FilmList";
 import LandingPage from "../pages/LandingPage";
 import React from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-// import SearchResults from "./SearchResults";
+import SearchResults from "./SearchResults";
 
 const router = createBrowserRouter([
   {
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     element: <ReviewList />,
   },
   {
-    path: "/:id",
+    path: "id/:id",
     element: <DetailsPage />,
   },
 
@@ -40,10 +40,10 @@ const router = createBrowserRouter([
     path: "/profile",
     element: <Profile />,
   },
-  // {
-  //   path: "/filter",
-  //   element: <SearchResults />,
-  // },
+  {
+    path: "/filter",
+    element: <SearchResults />,
+  },
   {
     path: "*",
     element: <Error />,

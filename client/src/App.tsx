@@ -13,27 +13,30 @@ import Error from "./pages/Error";
 import Navbar from "./components/Navbar";
 import SearchResults from "./components/SearchResults";
 import UsersList from "./pages/usersList";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
     <>
-      <Router>
-        <Navbar>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/filter" element={<SearchResults />} />
-            <Route path="/allusers" element={<UsersList />} />
-            <Route path="/allfilms" element={<FilmList searchText={null} />} />
-            <Route path="/allreviews" element={<ReviewList />} />
-            <Route path="/id/:id" element={<DetailsPage />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/register" element={<Registration />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/error" element={<Error />} />
-            <Route path="*" element={<Error />} />
-          </Routes>
-        </Navbar>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <Navbar>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/filter" element={<SearchResults />} />
+              <Route path="/allusers" element={<UsersList />} />
+              <Route path="/allfilms" element={<FilmList />} />
+              <Route path="/allreviews" element={<ReviewList />} />
+              <Route path="/id/:id" element={<DetailsPage />} />
+              <Route path="/login" element={<SignIn />} />
+              <Route path="/register" element={<Registration />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/error" element={<Error />} />
+              <Route path="*" element={<Error />} />
+            </Routes>
+          </Navbar>
+        </Router>
+      </AuthProvider>
     </>
   );
 }

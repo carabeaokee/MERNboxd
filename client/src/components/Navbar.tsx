@@ -71,24 +71,24 @@ export default function Navbar({ children }) {
 
     // If the search text is not empty, fetch the search results
     if (searchText.length > 0) {
-      fetch(`/api/films/filter?text=${searchText}`)
-        .then((response) => {
-          // Check if the response is ok
-          if (!response.ok) {
-            // If the response is not ok, throw an error
-            throw new Error("Network response was not ok");
-          }
-          // Parse the JSON response
-          return response.json();
-        })
-        // Set the search results
-        .then((data) => {
-          // If the component is unmounted, do not set the search results
-          if (!ignore) setSearchResults(data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      // fetch(`http://localhost:5004/api/films/filter?text=${searchText}`)
+      //   .then((response) => {
+      //     // Check if the response is ok
+      //     if (!response.ok) {
+      //       // If the response is not ok, throw an error
+      //       throw new Error("Network response was not ok");
+      //     }
+      //     // Parse the JSON response
+      //     return response.json();
+      //   })
+      //   // Set the search results
+      //   .then((data) => {
+      //     // If the component is unmounted, do not set the search results
+      //     if (!ignore) setSearchResults(data);
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error:", error);
+      //   });
     } else {
       // If the search text is empty, clear the search results
       setSearchResults([]);
@@ -102,10 +102,18 @@ export default function Navbar({ children }) {
   }, [searchText]);
 
   // Function to handle the form submission
-  const handleSearchSubmit = (event) => {
+  const handleSearchSubmit = async (event) => {
+    console.log("submitting");
     event.preventDefault();
+    const response = await fetch(
+      `http://localhost:5004/api/films/filter?text=${searchText}`
+    );
+    const result = await response.json();
+    console.log("result", result);
+    setSearchResults(result);
+    // Set the search result
     // Navigate to the filter page with the search text as a query parameter
-    // navigate(`/filter?text=${searchText}`);
+    navigate(`/filter?text=${searchText}`);
   };
 
   // const cloneChildren = React.Children.forEach(children, (child) => {

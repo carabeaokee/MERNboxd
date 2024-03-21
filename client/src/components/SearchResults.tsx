@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Grid } from "@mui/material";
 
 type SearchReview = {
   _id: string;
@@ -48,7 +48,7 @@ export default function SearchResults() {
 
   // useEffect hook to fetch search results
   useEffect(() => {
-    const url = `/api/films/filter?text=${text}`;
+    const url = `http://localhost:5004/api/films/filter?text=${text}`;
     console.log("API URL:", url);
     // Set loading to true and clear any previous errors
     setIsLoading(true);
@@ -91,17 +91,35 @@ export default function SearchResults() {
   }
 
   return (
-    <div>
-      <h2>Search Results</h2>
-      {films.map((film) => (
-        <div key={film._id}>
-          {film.title}
-          <Link to={`/films/${film._id}`}>
-            <img src={film.poster} alt={film.title} />
-          </Link>
-          <p>{film.year}</p>
-        </div>
-      ))}
-    </div>
+    <>
+      <div style={{ padding: "3rem" }}>
+        <Grid container spacing={3}>
+          {films.map((film) => (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              lg={3}
+              key={film._id}
+              style={{ color: "whitesmoke" }}
+            >
+              <a href={`/id/${film._id}`}>
+                <img
+                  src={film.poster}
+                  alt={film.title}
+                  style={{ width: "200px", height: "auto" }}
+                />
+              </a>
+              <h2>
+                {film.title}{" "}
+                <span style={{ fontSize: "0.8em" }}>({film.year})</span>
+              </h2>
+              <h3>Director: {film.director}</h3>
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+    </>
   );
 }

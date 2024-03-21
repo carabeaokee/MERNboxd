@@ -110,11 +110,19 @@ export const getFilmsByQuery = async (req, res) => {
 
     console.log("text", text);
 
+    let yearQuery;
+    if (text.includes("-")) {
+      const [startYear, endYear] = text.split("-");
+      yearQuery = { $gte: startYear, $lte: endYear };
+    } else {
+      yearQuery = text;
+    }
+
     let query = {
       $or: [
         { title: { $regex: new RegExp(text, "i") } },
         { director: { $regex: new RegExp(text, "i") } },
-        { year: text },
+        { year: yearQuery },
       ],
     };
 

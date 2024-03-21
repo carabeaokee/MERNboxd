@@ -9,16 +9,42 @@ import {
   Button,
   Grid,
 } from "@mui/material";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
+import { useContext, useState, useEffect } from "react";
 import "../css/login.css";
 
 const SignIn = () => {
+  const { user, loginUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log("logging in");
+  const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log("Attempting to log in with: ", email, password);
+
+    loginUser(email, password)
+      .then(() => {})
+      .catch((error) => {
+        setError(error.message);
+        console.error(error.message);
+      });
+  };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/profile");
+    }
+  }, [user, navigate]);
+
+  const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
   };
 
   return (
@@ -47,7 +73,7 @@ const SignIn = () => {
               name="email"
               autoFocus
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailInput}
             />
 
             <TextField
@@ -59,9 +85,7 @@ const SignIn = () => {
               label="Password"
               type="password"
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              onChange={handlePasswordInput}
             />
 
             <Button
