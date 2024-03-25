@@ -28,9 +28,9 @@ function App() {
               <Route path="/allfilms" element={<FilmList />} />
               <Route path="/allreviews" element={<ReviewList />} />
               <Route path="/id/:id" element={<DetailsPage />} />
-              <Route path="/login" element={<SignIn />} />
+              <Route path="/signin" element={<SignIn />} />
               <Route path="/register" element={<Registration />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:id" element={<Profile />} />
               <Route path="/error" element={<Error />} />
               <Route path="*" element={<Error />} />
             </Routes>

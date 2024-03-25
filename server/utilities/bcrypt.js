@@ -10,8 +10,8 @@ const hashPassword = async (password) => {
   return hashedPassword;
 };
 
-const verifyPassword = (password, hashedPassword) => {
-  const verified = bcryptjs.compare(password, hashedPassword);
+const verifyPassword = async (password, hashedPassword) => {
+  const verified = await bcryptjs.compare(password, hashedPassword);
   return verified;
 };
 

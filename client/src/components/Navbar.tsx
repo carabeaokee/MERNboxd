@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -14,6 +14,8 @@ import Outlinedcircles from "../assets/icons/outlinedcircles.svg";
 import Accountavatar from "../assets/icons/accountavatar.svg";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { useContext } from "react";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -56,13 +58,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+interface Props {
+  children: ReactNode;
+}
+
 // Navbar component that appears at the top of the page
-export default function Navbar({ children }) {
+const Navbar = ({ children }: Props) => {
   // State for storing the search text
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   // Hook for navigating to a different page
   const navigate = useNavigate();
+  const authContext = useContext(AuthContext);
+  console.log(authContext);
+  const { userId } = authContext;
 
   // useEffect hook to fetch search results
   useEffect(() => {
@@ -71,24 +80,6 @@ export default function Navbar({ children }) {
 
     // If the search text is not empty, fetch the search results
     if (searchText.length > 0) {
-      // fetch(`http://localhost:5004/api/films/filter?text=${searchText}`)
-      //   .then((response) => {
-      //     // Check if the response is ok
-      //     if (!response.ok) {
-      //       // If the response is not ok, throw an error
-      //       throw new Error("Network response was not ok");
-      //     }
-      //     // Parse the JSON response
-      //     return response.json();
-      //   })
-      //   // Set the search results
-      //   .then((data) => {
-      //     // If the component is unmounted, do not set the search results
-      //     if (!ignore) setSearchResults(data);
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error:", error);
-      //   });
     } else {
       // If the search text is empty, clear the search results
       setSearchResults([]);
@@ -102,7 +93,7 @@ export default function Navbar({ children }) {
   }, [searchText]);
 
   // Function to handle the form submission
-  const handleSearchSubmit = async (event) => {
+  const handleSearchSubmit = async (event: { preventDefault: () => void }) => {
     console.log("submitting");
     event.preventDefault();
     const response = await fetch(
@@ -115,16 +106,6 @@ export default function Navbar({ children }) {
     // Navigate to the filter page with the search text as a query parameter
     navigate(`/filter?text=${searchText}`);
   };
-
-  // const cloneChildren = React.Children.forEach(children, (child) => {
-  //   console.log("child", child);
-  //   // return React.cloneElement(child, { searchText });
-  //   clonedChildren = child.props.children.map((child) => {
-  //     return React.cloneElement(child, { searchText });
-  //   });
-  // });
-
-  // console.log("clonedChildren", clonedChildren);
 
   return (
     <>
@@ -190,7 +171,17 @@ export default function Navbar({ children }) {
               </Button>
             </Search>
           </form>
-          <IconButton color="inherit" component={RouterLink} to="/profile">
+
+          <IconButton
+            color="inherit"
+            onClick={() => {
+              if (userId === "") {
+                navigate("/signin");
+              } else {
+                navigate(`/profile/${userId}`);
+              }
+            }}
+          >
             <Avatar
               alt="Profile"
               src={Accountavatar}
@@ -202,8 +193,9 @@ export default function Navbar({ children }) {
           </IconButton>
         </Toolbar>
       </AppBar>
-      {/* {clonedChildren} */}
       {children}
     </>
   );
-}
+};
+
+export default Navbar;

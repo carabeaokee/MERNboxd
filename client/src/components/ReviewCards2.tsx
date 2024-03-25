@@ -194,7 +194,7 @@ export default function ReviewCards2({ reviews }: ReviewCardProps) {
           fluid
           className="p-4 p-md-5 text-center text-lg-start shadow-1-strong rounded"
           style={{
-            backgroundImage: `url(${review.film.poster})`,
+            backgroundColor: "grey",
           }}
         >
           <MDBRow className="d-flex justify-content-center">

@@ -1,105 +1,64 @@
-import { createContext, useState } from "react";
+import { createContext, useState, ReactNode } from "react";
 import React from "react";
 
 interface AuthContextType {
-  user: User | null;
-  loginUser: (email: string, password: string) => void;
-  registerUser: (email: string, password: string, username: string) => void;
   logoutUser: () => void;
+  getToken: () => void;
+  setUserCredentials: (userId: string) => void;
+  userId: string;
+  isLoading: boolean;
+  // admin: boolean;
 }
 
 const defaultValue: AuthContextType = {
-  user: null,
-  loginUser: () => {
-    throw Error("login function not implemented");
-  },
-  registerUser: () => {
-    throw Error("signup function not implemented");
-  },
-  logoutUser: () => {
-    throw Error("logout function not implemented");
-  },
+  logoutUser: () => {},
+  getToken: () => {},
+  setUserCredentials: () => {},
+  userId: "",
+  isLoading: false,
+  // admin: false,
 };
-export const AuthContext = createContext(defaultValue);
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+export const AuthContext = createContext<AuthContextType>(defaultValue);
 
-  // Define the login function
-  const loginUser = async (email: string, password: string) => {
-    try {
-      const response = await fetch("/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+type AuthContextProps = {
+  children: ReactNode;
+};
 
-      if (!response.ok) {
-        throw new Error("Login failed");
-      }
+export const AuthProvider = ({ children }: AuthContextProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState("");
 
-      const data = await response.json();
-      setUser(data.user); // Update the user state
-    } catch (error) {
-      console.error("Error during login: ", error);
-      setUser(null); // Reset the user state
-    }
+  const setUserCredentials = (userId: string) => {
+    setUserId(userId);
   };
 
-  // Define the signup function
-  const registerUser = async (
-    email: string,
-    password: string,
-    username: string
-  ) => {
-    try {
-      const response = await fetch("/api/users/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, username }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Signup failed");
-      }
-
-      const data = await response.json();
-      setUser(data.user);
-    } catch (error) {
-      console.error("Error during signup: ", error);
+  const getToken = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      return token;
     }
   };
 
   const logoutUser = async () => {
-    try {
-      const response = await fetch("/api/users/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Logout failed");
-      }
-
-      setUser(null);
-    } catch (error) {
-      console.error("Error during logout: ", error);
+    const token = localStorage.getItem("token");
+    if (token) {
+      console.log("found token - removing token");
+      localStorage.removeItem("token");
+      setUserCredentials("");
+    } else {
+      console.log("Must be logged in to log out");
     }
   };
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        loginUser,
+        userId,
+        getToken,
+        isLoading,
         logoutUser,
-        registerUser,
+        setUserCredentials,
       }}
     >
       {children}

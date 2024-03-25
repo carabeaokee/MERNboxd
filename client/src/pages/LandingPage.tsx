@@ -22,10 +22,10 @@ function LandingPage() {
             borderRadius: "20px",
             color: "white",
             position: "absolute",
-            top: "50%",
+            top: "55%",
             left: "15%",
             right: "15%",
-            bottom: "5%",
+            bottom: "7%",
           }}
         >
           <br />
@@ -48,7 +48,7 @@ function LandingPage() {
                 src={Outlinedcircles}
                 alt="circles"
                 style={{
-                  width: "1rem",
+                  width: "1.5rem",
                   height: "1rem",
                   paddingRight: "0.5rem",
                   marginBottom: "-0.1rem",

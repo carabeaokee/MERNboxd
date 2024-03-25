@@ -2,6 +2,7 @@
 import * as dotenv from "dotenv";
 // Loading the .env file
 dotenv.config();
+import passport from "passport";
 
 import express from "express";
 import cors from "cors";
@@ -10,6 +11,7 @@ import userRouter from "./routes/userRoutes.js";
 import filmRouter from "./routes/filmRoutes.js";
 import reviewRouter from "./routes/reviewRoutes.js";
 import { cloudinaryConfig } from "./config/cloudinary.js";
+import { passportConfig } from "./config/passportConfig.js";
 
 // Initializing an Express application
 const app = express();
@@ -42,6 +44,8 @@ mongoose
   })
   // If there is an error connecting to the database, log the error
   .catch((err) => console.log(err));
+app.use(passport.initialize());
+passportConfig();
 
 // Using the _Router for all routes starting with "/api/_"
 app.use("/api/users", userRouter);

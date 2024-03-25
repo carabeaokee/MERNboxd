@@ -8,6 +8,7 @@ import {
   UpdateAllUserPW,
 } from "../controllers/userController.js";
 import { multerUpload } from "../middleware/multer.js";
+import jwtAuth from "../middleware/jwtAuth.js";
 
 // define a new router
 const userRouter = express.Router();
@@ -18,7 +19,8 @@ userRouter.get("/allusers", getAllUsers);
 userRouter.post("/register", createUser);
 userRouter.post("/login", loginUser);
 userRouter.post(
-  "/profile/:id",
+  "/profile/",
+  jwtAuth,
   multerUpload.single("avatar"),
   updateUserAvatar
 );

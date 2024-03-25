@@ -66,7 +66,7 @@ export const loginUser = async (req, res) => {
     const { password: hashedPassword } = user;
     console.log("hashedPassword :>> ", hashedPassword);
     // Verify the password
-    const verified = verifyPassword(password, hashedPassword);
+    const verified = await verifyPassword(password, hashedPassword);
 
     // If the password is correct, generate a token
     if (verified) {
@@ -74,15 +74,29 @@ export const loginUser = async (req, res) => {
       // Send the token as a response
       if (token) {
         console.log("used verified");
-        res.status(201).json({ message: "User logged in", token: token });
+        res
+          .status(201)
+          .json({ message: "User logged in", token: token, _id: user._id });
       } else {
         console.log("Failed to generate token");
       }
     } else {
       console.log("Verification failed");
+      res.status(401).json({ message: "Invalid email or password" });
     }
   } else {
-    res.status(500).json({ message: "Incorrect password" });
+    res.status(401).json({ message: "Invalid email or password" });
+  }
+};
+
+export const getUserById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await UserModel.findById(id);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
 };
 

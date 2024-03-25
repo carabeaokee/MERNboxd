@@ -1,109 +1,109 @@
-import { LockOutlined } from "@mui/icons-material";
-import {
-  Container,
-  CssBaseline,
-  Box,
-  Avatar,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-} from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
-import { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+// import styles from "../css/login.module.css";
 import "../css/login.css";
 
 const SignIn = () => {
-  const { user, loginUser } = useContext(AuthContext);
+  // const { user, loginUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+
+  const { setUserCredentials } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log("Attempting to log in with: ", email, password);
+  const handleLogin = async () => {
+    console.log("logging in");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-    loginUser(email, password)
-      .then(() => {})
-      .catch((error) => {
-        setError(error.message);
-        console.error(error.message);
-      });
-  };
+    const urlencoded = new URLSearchParams();
+    urlencoded.append("email", email);
+    urlencoded.append("password", password);
 
-  useEffect(() => {
-    if (user) {
-      navigate("/profile");
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: urlencoded,
+      redirect: "follow" as RequestRedirect,
+    };
+    try {
+      const response = await fetch(
+        "http://localhost:5004/api/users/login",
+        requestOptions
+      );
+      const result = await response.json();
+      console.log("result :>> ", result);
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+      const { token, _id } = result;
+      console.log(result);
+      if (token) {
+        console.log("Token being set", token);
+        localStorage.setItem("token", token);
+      }
+      if (_id) {
+        setUserCredentials(_id);
+        navigate(`/profile/${_id}`);
+      }
+    } catch (error) {
+      console.log(error);
     }
-  }, [user, navigate]);
-
-  const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
   };
 
   return (
     <>
-      <Container maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            mt: 20,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
-            <LockOutlined />
-          </Avatar>
-          <Typography variant="h5">Login</Typography>
-          <Box sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
+      <div className="login-page">
+        <div className="login-container">
+          <div
+            style={{
+              marginBottom: "1rem",
+              backgroundColor: "grey",
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+            }}
+          >
+            {/* Lock icon can be added here */}
+          </div>
+          <h2 style={{ color: "white" }}>Login</h2>
+          <div style={{ marginTop: "1rem", width: "100%" }}>
+            <input
+              className="login-input"
               required
-              fullWidth
               id="email"
-              label="Email Address"
+              placeholder="Email Address"
               name="email"
               autoFocus
               value={email}
-              onChange={handleEmailInput}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
-            <TextField
-              margin="normal"
+            <input
+              className="login-input"
               required
-              fullWidth
               id="password"
               name="password"
-              label="Password"
+              placeholder="Password"
               type="password"
               value={password}
-              onChange={handlePasswordInput}
+              onChange={(e) => setPassword(e.target.value)}
             />
-
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={handleLogin}
-            >
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <button className="login-button" onClick={handleLogin}>
               Login
-            </Button>
-            <Grid container justifyContent={"flex-end"}>
-              <Grid item>
-                <Link to="/register">Don't have an account? Sign-up</Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Container>
+            </button>
+            <div className="flex-end">
+              <a href="/register" style={{ color: "lightgray" }}>
+                Don't have an account? Sign-up
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
