@@ -59,7 +59,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 interface Props {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 // Navbar component that appears at the top of the page

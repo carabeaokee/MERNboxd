@@ -17,6 +17,13 @@ type Film = {
 function FilmList() {
   const [films, setFilms] = useState<Film[]>([]);
   // const [searchTerm, setSearchTerm] = useState("");
+  useEffect(() => {
+    document.body.classList.add("film-page");
+
+    return () => {
+      document.body.classList.remove("film-page");
+    };
+  }, []);
 
   // fetch the data from the server
   const getData = async () => {
@@ -43,7 +50,12 @@ function FilmList() {
   // render the films array
   return (
     <>
-      <div style={{ padding: "3rem" }}>
+      <div className="banner-image"></div>
+      <div style={{ padding: "1rem" }}>
+        <h1 style={{ fontFamily: "FatFace", color: "lightgrey" }}>
+          Here's what people have been watching...
+        </h1>
+        <br />
         <Grid container spacing={3}>
           {films.map((film) => (
             <Grid
@@ -59,6 +71,7 @@ function FilmList() {
                 <img
                   src={film.poster}
                   alt={film.title}
+                  className="poster"
                   style={{ width: "200px", height: "auto" }}
                 />
               </a>

@@ -24,6 +24,10 @@ export const getAllReviews = async (req, res) => {
 
 // Function to add a review
 export const addReview = async (req, res) => {
+  console.log("req.body", req.body);
+  // const user = req.user;
+  // const { username } = user;
+  // console.log("username", username);
   console.log("Adding review");
   // Retrieve the userId, body and filmId from the request body
   const { userId, body, filmId } = req.body;

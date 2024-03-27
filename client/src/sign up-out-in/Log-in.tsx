@@ -1,14 +1,23 @@
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 // import styles from "../css/login.module.css";
 import "../css/login.css";
+import Lock from "../assets/icons/lock.svg";
 
 const SignIn = () => {
   // const { user, loginUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    document.body.classList.add("login-page");
+
+    return () => {
+      document.body.classList.remove("login-page");
+    };
+  }, []);
 
   const { setUserCredentials } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -60,16 +69,18 @@ const SignIn = () => {
         <div className="login-container">
           <div
             style={{
-              marginBottom: "1rem",
-              backgroundColor: "grey",
+              marginBottom: "0.2rem",
+              backgroundColor: "white",
               width: "40px",
               height: "40px",
               borderRadius: "50%",
             }}
           >
-            {/* Lock icon can be added here */}
+            <img src={Lock} alt="lock" style={{ marginTop: "3px" }} />
           </div>
-          <h2 style={{ color: "white" }}>Login</h2>
+          <h2 style={{ color: "white", fontFamily: "arial", fontSize: "28px" }}>
+            Log In
+          </h2>
           <div style={{ marginTop: "1rem", width: "100%" }}>
             <input
               className="login-input"
@@ -96,8 +107,16 @@ const SignIn = () => {
             <button className="login-button" onClick={handleLogin}>
               Login
             </button>
-            <div className="flex-end">
-              <a href="/register" style={{ color: "lightgray" }}>
+            <div className="flex-end" style={{ margin: "20px" }}>
+              <a
+                href="/register"
+                style={{
+                  color: "white",
+                  fontFamily: "helvetica",
+                  fontSize: "18px",
+                  marginTop: "10px",
+                }}
+              >
                 Don't have an account? Sign-up
               </a>
             </div>

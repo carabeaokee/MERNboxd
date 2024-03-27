@@ -108,6 +108,7 @@ export default function SearchResults() {
                 <img
                   src={film.poster}
                   alt={film.title}
+                  className="poster"
                   style={{ width: "200px", height: "auto" }}
                 />
               </a>

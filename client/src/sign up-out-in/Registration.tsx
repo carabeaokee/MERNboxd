@@ -1,16 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/rego.css";
+import Lock from "../assets/icons/lock.svg";
 
 const Registration = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = () => {
-    console.log("registering");
+  useEffect(() => {
+    document.body.classList.add("rego-page");
 
+    return () => {
+      document.body.classList.remove("rego-page");
+    };
+  }, []);
+
+  const handleRegister = () => {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    console.log("registering");
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
@@ -43,16 +57,20 @@ const Registration = () => {
         <div className="rego-container">
           <div
             style={{
-              marginBottom: "1rem",
-              backgroundColor: "grey",
+              marginBottom: "0.2rem",
+              backgroundColor: "white",
               width: "40px",
               height: "40px",
               borderRadius: "50%",
             }}
           >
-            {/* Lock icon can be added here */}
+            {" "}
+            <img src={Lock} alt="lock" style={{ marginTop: "3px" }} />
           </div>
-          <h2 style={{ color: "white" }}>User Registration</h2>
+
+          <h2 style={{ color: "white", fontFamily: "arial", fontSize: "28px" }}>
+            Sign Up
+          </h2>
           <div style={{ marginTop: "1rem", width: "100%" }}>
             <input
               className="rego-input"
@@ -85,11 +103,33 @@ const Registration = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button className="rego-button" onClick={handleRegister}>
+            <input
+              className="rego-input"
+              required
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <button
+              className="rego-button"
+              onClick={handleRegister}
+              style={{ fontSize: "19px" }}
+            >
               Register
             </button>
             <div className="flex-end">
-              <a href="/signin" style={{ color: "lightgray" }}>
+              <a
+                href="/signin"
+                style={{
+                  color: "white",
+                  fontFamily: "helvetica",
+                  fontSize: "20px",
+                  marginTop: "10px",
+                }}
+              >
                 Already have an account? Login
               </a>
             </div>
