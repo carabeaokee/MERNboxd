@@ -9,10 +9,10 @@ const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 };
 
-const verify = (jwt_payload, done) => {
+const verify = async (jwt_payload, done) => {
   const { sub } = jwt_payload;
   try {
-    const user = UserModel.findById(sub);
+    const user = await UserModel.findById(sub);
     if (user) {
       return done(null, user);
     } else {

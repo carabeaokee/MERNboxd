@@ -24,17 +24,20 @@ export const getAllReviews = async (req, res) => {
 
 // Function to add a review
 export const addReview = async (req, res) => {
-  console.log("req.body", req.body);
+  // console.log("req.body", req.body);
+  const userId = req.user._id;
+
+  // console.log("userID", userID);
   // const user = req.user;
   // const { username } = user;
   // console.log("username", username);
-  console.log("Adding review");
   // Retrieve the userId, body and filmId from the request body
-  const { userId, body, filmId } = req.body;
+  const { body, filmId } = req.body;
+  console.log("filmId", filmId);
 
   // Check if all fields are filled out
-  if (!userId || !body || !filmId) {
-    return res.status(400).json({ message: "Please fill out all fields" });
+  if (!body) {
+    return res.status(400).json({ message: "cant submit review no letters " });
   }
 
   // Create a new review
@@ -46,22 +49,22 @@ export const addReview = async (req, res) => {
 
   // Save the new review
   const savedReview = await newReview.save();
-  console.log("new review:>> ", savedReview);
 
   // Retrieve the new review and populate the author and film fields
-  const review = await ReviewModel.findById(savedReview._id).populate([
-    {
-      path: "author",
-      select: "username avatar",
-    },
-    {
-      path: "film",
-      select: "title poster",
-    },
-  ]);
+  // const review = await ReviewModel.findById(savedReview._id).populate([
+  //   {
+  //     path: "author",
+  //     select: "username avatar",
+  //   },
+  //   {
+  //     path: "film",
+  //     select: "title poster",
+  //   },
+  // ]);
 
   // Check if the film exists
-  const film = await FilmModel.findById(filmId);
+  const film = await FilmModel.findById({ _id: filmId });
+  // console.log("FILMS!!!!!!!!!!", film);
 
   if (!film) {
     console.error("Error: Film not found");
@@ -72,14 +75,22 @@ export const addReview = async (req, res) => {
   if (!film.reviews) {
     film.reviews = [];
   }
-  film.reviews.push(review._id);
+  film.reviews.push(savedReview._id);
 
   // Save the updated film
   try {
-    await film.save();
+    const updatedFilm = await film.save();
+    // const populatedFilm = updatedFilm
+    //   .populate({
+    //     path: "reviews",
+    //   })
+    //   .populate({
+    //     path: "author",
+    //     // select: "username avatar",
+    //   });
 
     // Send the review and film as a response
-    res.status(200).json({ review, film });
+    res.status(200).json({ savedReview, updatedFilm });
   } catch (error) {
     console.error("Error adding review:", error);
     res

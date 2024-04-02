@@ -76,7 +76,12 @@ export const loginUser = async (req, res) => {
         console.log("used verified");
         res
           .status(201)
-          .json({ message: "User logged in", token: token, _id: user._id });
+          .json({
+            message: "User logged in",
+            token: token,
+            _id: user._id,
+            username: user.username,
+          });
       } else {
         console.log("Failed to generate token");
       }
@@ -156,3 +161,17 @@ export const updateUserAvatar = async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 };
+
+// export function getUserFromToken() {
+//   const token = localStorage.getItem('token');
+//   if (!token) return null;
+
+//   try {
+//     const payload = token.split('.')[1];
+//     const base64 = payload.replace('-', '+').replace('_', '/');
+//     return JSON.parse(window.atob(base64));
+//   } catch (e) {
+//     console.error('Decoding token failed:', e);
+//     return null;
+//   }
+// }
